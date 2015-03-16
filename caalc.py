@@ -1,10 +1,13 @@
 #!/usr/bin/python
 # coding: utf
 
-import readline
+from sys import stdin
 import sys
 import tpg
 import itertools
+
+if stdin.isatty():
+    import readline
 
 def make_op(s):
     return {
@@ -75,14 +78,16 @@ class Calc(tpg.Parser):
 
 calc = Calc()
 Vars={}
-PS1='--> '
+if stdin.isatty():
+    PS1='--> '
+else:
+    PS1=''
 
 Stop=False
 while not Stop:
     try:
         line = raw_input(PS1)
     except EOFError:
-        print
         break
     try:
         res = calc(line)
@@ -90,4 +95,9 @@ while not Stop:
         print >> sys.stderr, exc
         res = None
     if res != None:
-        print res
+        if stdin.isatty():
+            print res
+        else:
+            print line + ' >> ' + str(res)
+if stdin.isatty():
+    print
