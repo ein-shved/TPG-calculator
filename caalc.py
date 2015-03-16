@@ -69,7 +69,7 @@ class Calc(tpg.Parser):
               | number/a
               | '\(' Expr/a '\)' ;
     Vector/$Vector(a)$ -> '\[' '\]' $a=[]$ | '\[' Atoms/a '\]' ;
-    Atoms/v -> Atom/a Atoms/t $v=[a]+t$ | Atom/a $v=[a]$ ;
+    Atoms/v -> Expr/a Atoms/t $v=[a]+t$ | Expr/a $v=[a]$ ;
 
     """
 
