@@ -47,6 +47,8 @@ class Vector(list):
             m_a = a.to_matrix();
         if m_a != None:
             return m_s.__mul__(m_a);
+        return self.fallback_mul(a)
+    def fallback_mul(self, a):
         return self.__op(a, lambda c,d: c*d)
 
     def __and__(self, a):
@@ -80,7 +82,7 @@ class Matrix(Vector):
 
     def __mul__(self, other):
         if self.m != other.n:
-            return Vector.__mul__(self, other)
+            return self.fallback_mul(other)
         l= [[sum(a*b for a,b in zip(self_row,other_col)) for other_col in zip(*other)] for self_row in self]
         return Vector(Vector(v) for v in l)
 
@@ -88,8 +90,14 @@ class Matrix(Vector):
         width = max(len(str(v))  for l in self for v in l)
         fmt = "{0:" + str(width+1) + "d}"
         result = "\n"
+        m = max(len(l) for l in self)
         for l in self:
-            result += "(" + "".join(fmt.format(c) for c in l) + ")\n"
+            result += "("
+            for c in l:
+                result += fmt.format(c)
+            result += " "*((width + 1)*(m - len(l)))
+            result += ")\n"
+
         return result
 
 
