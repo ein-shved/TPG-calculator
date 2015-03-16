@@ -26,6 +26,9 @@ class Vector(list):
         list.__init__(self, vector)
 
     def __str__(self):
+        m_s = self.to_matrix();
+        if m_s != None:
+            return m_s.__str__()
         return "[" + " ".join(str(c) for c in self) + "]"
 
     def __op(self, a, op):
@@ -80,6 +83,11 @@ class Matrix(Vector):
             return Vector.__mul__(self, other)
         l= [[sum(a*b for a,b in zip(self_row,other_col)) for other_col in zip(*other)] for self_row in self]
         return Vector(Vector(v) for v in l)
+    def __str__(self):
+        result = "\n"
+        for l in self:
+            result += "( " + " ".join(str(c) for c in l) + " )\n"
+        return result
 
 
 class Calc(tpg.Parser):
