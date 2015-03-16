@@ -83,10 +83,13 @@ class Matrix(Vector):
             return Vector.__mul__(self, other)
         l= [[sum(a*b for a,b in zip(self_row,other_col)) for other_col in zip(*other)] for self_row in self]
         return Vector(Vector(v) for v in l)
+
     def __str__(self):
+        width = max(len(str(v))  for l in self for v in l)
+        fmt = "{0:" + str(width+1) + "d}"
         result = "\n"
         for l in self:
-            result += "( " + " ".join(str(c) for c in l) + " )\n"
+            result += "(" + "".join(fmt.format(c) for c in l) + ")\n"
         return result
 
 
