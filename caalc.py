@@ -22,6 +22,8 @@ def make_op(s):
 class Vector(list):
     def __init__(self, *argp, **argn):
         list.__init__(self, *argp, **argn)
+    def __init__(self, vector):
+        list.__init__(self, vector)
 
     def __str__(self):
         return "[" + " ".join(str(c) for c in self) + "]"
@@ -35,7 +37,14 @@ class Vector(list):
     def __add__(self, a): return self.__op(a, lambda c,d: c+d)
     def __sub__(self, a): return self.__op(a, lambda c,d: c-d)
     def __div__(self, a): return self.__op(a, lambda c,d: c/d)
-    def __mul__(self, a): return self.__op(a, lambda c,d: c*d)
+    def __mul__(self, a):
+        m_a = None;
+        m_s = self.to_matrix();
+        if m_s != None:
+            m_a = a.to_matrix();
+        if m_a != None:
+            return m_s.__mul__(m_a);
+        return self.__op(a, lambda c,d: c*d)
 
     def __and__(self, a):
         try:
@@ -48,6 +57,24 @@ class Vector(list):
             return self.__class__(itertools.chain(self, a))
         except TypeError:
             return self.__class__(c or a for c in self)
+    def to_matrix(self):
+        m = Matrix(self);
+        return m;
+
+class Matrix(Vector):
+    def __init__(self, vector):
+        Vector.__init__(self, vector)
+        print len(self)
+        self.n = len(self)
+        self.m = len(self[0])
+        for l in self:
+            self.m = min(self.m, len(l))
+
+    def __mul__(self, other):
+        if self.m != other.n:
+            return Vector.__mul__(self, other)
+        return [[sum(a*b for a,b in zip(self_row,other_col)) for other_col in zip(*other)] for self_row in self]
+
 
 class Calc(tpg.Parser):
     r"""
