@@ -73,6 +73,8 @@ class Matrix(Vector):
     def __init__(self, vector):
         Vector.__init__(self, vector)
         self.n = len(self)
+        if self.n <= 0:
+            raise TypeError
         self.m = len(self[0])
         for l in self:
             self.m = min(self.m, len(l))
