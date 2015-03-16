@@ -58,22 +58,28 @@ class Vector(list):
         except TypeError:
             return self.__class__(c or a for c in self)
     def to_matrix(self):
-        m = Matrix(self);
-        return m;
+        try:
+            m = Matrix(self);
+            return m;
+        except TypeError:
+            return None
 
 class Matrix(Vector):
     def __init__(self, vector):
         Vector.__init__(self, vector)
-        print len(self)
         self.n = len(self)
         self.m = len(self[0])
         for l in self:
             self.m = min(self.m, len(l))
+            for v in l:
+                if not isinstance(v, int):
+                    raise TypeError
 
     def __mul__(self, other):
         if self.m != other.n:
             return Vector.__mul__(self, other)
-        return [[sum(a*b for a,b in zip(self_row,other_col)) for other_col in zip(*other)] for self_row in self]
+        l= [[sum(a*b for a,b in zip(self_row,other_col)) for other_col in zip(*other)] for self_row in self]
+        return Vector(Vector(v) for v in l)
 
 
 class Calc(tpg.Parser):
